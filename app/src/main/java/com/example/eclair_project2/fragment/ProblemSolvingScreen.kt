@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.eclair_project.navigation.Screen
+import com.example.eclair_project2.navigation.Screen
 
 @Composable
 fun ProblemSolvingScreen(navController: NavController) {

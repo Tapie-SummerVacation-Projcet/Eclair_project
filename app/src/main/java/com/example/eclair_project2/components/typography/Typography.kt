@@ -3,7 +3,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontStyle
-import com.example.eclair_project.R
+import com.example.eclair_project2.R
 
 val Pridi = FontFamily(
     Font(R.font.pridi_regular, FontWeight.Normal),

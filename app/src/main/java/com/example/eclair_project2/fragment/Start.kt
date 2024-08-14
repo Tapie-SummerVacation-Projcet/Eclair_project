@@ -16,11 +16,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.eclair_project.components.icon.AccountIcon
-import com.example.eclair_project.components.icon.LoginIcon
-import com.example.eclair_project.components.typography.Pridi
-import com.example.eclair_project.ui.theme.LightPink
-import com.example.eclair_project.ui.theme.Pink40
+import com.example.eclair_project2.components.icon.AccountIcon
+import com.example.eclair_project2.components.icon.LoginIcon
+import com.example.eclair_project2.components.typography.Pridi
+import com.example.eclair_project2.ui.theme.LightPink
+import com.example.eclair_project2.ui.theme.Pink40
 
 @Composable
 fun Starting(navController: NavController) {

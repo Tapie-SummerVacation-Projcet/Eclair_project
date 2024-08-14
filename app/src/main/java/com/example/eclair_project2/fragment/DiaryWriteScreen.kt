@@ -10,8 +10,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.eclair_project.navigation.Screen
-import com.example.eclair_project.ui.theme.Pink40
+import com.example.eclair_project2.navigation.Screen
+import com.example.eclair_project2.ui.theme.Pink40
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat

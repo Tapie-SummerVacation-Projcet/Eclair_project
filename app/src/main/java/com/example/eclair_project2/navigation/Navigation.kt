@@ -18,16 +18,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.eclair_project.components.navigation.BottomNavigationBar
+import com.example.eclair_project2.components.navigation.BottomNavigationBar
 
-import com.example.eclair_project.components.screen.LoginScreen
-import com.example.eclair_project.components.screen.SignUpScreen
-import com.example.eclair_project.fragment.CommunityScren
-import com.example.eclair_project.fragment.DiaryWriteScreen
-import com.example.eclair_project.fragment.EmotionScreen
-import com.example.eclair_project.fragment.HomeScreen
-import com.example.eclair_project.fragment.ProblemSolvingScreen
-import com.example.eclair_project.fragment.Starting
+import com.example.eclair_project2.components.screen.LoginScreen
+import com.example.eclair_project2.components.screen.SignUpScreen
+import com.example.eclair_project2.fragment.CommunityScren
+import com.example.eclair_project2.fragment.DiaryWriteScreen
+import com.example.eclair_project2.fragment.EmotionScreen
+import com.example.eclair_project2.fragment.HomeScreen
+import com.example.eclair_project2.fragment.ProblemSolvingScreen
+import com.example.eclair_project2.fragment.Starting
 
 sealed class Screen(val route: String) {
     object Start : Screen("start")

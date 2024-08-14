@@ -14,7 +14,15 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.eclair_project.components.icon.*
+import com.example.eclair_project2.components.icon.*
+import com.example.eclair_project2.components.icon.BookChosenIcon
+import com.example.eclair_project2.components.icon.BookIcon
+import com.example.eclair_project2.components.icon.CommunityChosenIcon
+import com.example.eclair_project2.components.icon.CommunityIcon
+import com.example.eclair_project2.components.icon.HomeChosenIcon
+import com.example.eclair_project2.components.icon.HomeIcon
+import com.example.eclair_project2.components.icon.PenChosenIcon
+import com.example.eclair_project2.components.icon.PenIcon
 
 data class BottomNavItem(
     val name: String,

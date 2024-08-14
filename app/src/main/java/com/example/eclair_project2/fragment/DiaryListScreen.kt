@@ -29,6 +29,7 @@ fun DiaryListScreen() {
                     for (diarySnapshot in snapshot.children) {
                         val diary = diarySnapshot.getValue(Diary::class.java)
                         if (diary != null) {
+                            diary.key = diarySnapshot.key // Firebase의 key를 Diary 객체에 저장
                             diaries.add(diary)
                         }
                     }
@@ -55,21 +56,52 @@ fun DiaryListScreen() {
         LazyColumn {
             items(diaryList.size) { index ->
                 val diary = diaryList[index]
-                DiaryItem(diary)
+                DiaryItem(diary, onDelete = {
+                    diary.key?.let { key -> // key가 null이 아닌 경우에만 삭제 수행
+                        if (userId != null) {
+                            database.child(userId).child(key).removeValue().addOnCompleteListener { task ->
+                                if (!task.isSuccessful) {
+                                    errorMessage = "일기 삭제 실패: ${task.exception?.localizedMessage}"
+                                }
+                            }
+                        }
+                    }
+                })
             }
         }
     }
 }
 
 @Composable
-fun DiaryItem(diary: Diary) {
+fun DiaryItem(diary: Diary, onDelete: () -> Unit) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "일기 삭제") },
+            text = { Text("정말로 이 일기를 삭제하시겠습니까?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onDelete()
+                    showDialog = false
+                }) {
+                    Text("삭제")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("취소")
+                }
+            }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable {
-                // 일기 상세 화면으로 이동 또는 일기 내용 보여주기 등의 처리
-            }
+            .clickable { showDialog = true }
     ) {
         Text(text = diary.title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(4.dp))
