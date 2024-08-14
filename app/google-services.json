@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "379387525254",
+    "project_id": "eclairproject-c236c",
+    "storage_bucket": "eclairproject-c236c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379387525254:android:2cec9906337a9486a6b907",
+        "android_client_info": {
+          "package_name": "com.example.eclair_project2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3bKoJ8b3fSMehq3c_PMi1oIBsSWw501I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
