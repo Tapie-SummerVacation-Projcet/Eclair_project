@@ -1,11 +1,11 @@
 package com.example.eclair_project2.navigation
 
+import SolutionWriteScreen
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,26 +23,30 @@ import com.example.eclair_project2.components.navigation.BottomNavigationBar
 import com.example.eclair_project2.components.screen.LoginScreen
 import com.example.eclair_project2.components.screen.SignUpScreen
 import com.example.eclair_project2.fragment.CommunityScren
+import com.example.eclair_project2.fragment.DiaryViewModel
 import com.example.eclair_project2.fragment.DiaryWriteScreen
 import com.example.eclair_project2.fragment.EmotionScreen
 import com.example.eclair_project2.fragment.HomeScreen
 import com.example.eclair_project2.fragment.ProblemSolvingScreen
+import com.example.eclair_project2.fragment.SolutionListScreen
 import com.example.eclair_project2.fragment.Starting
+
 
 sealed class Screen(val route: String) {
     object Start : Screen("start")
     object Login : Screen("login")
     object SignUp : Screen("signup")
     object Home : Screen("home")
-    object Emotion : Screen("emotion")
+    object Emotion : Screen("emotion/{diaryId}")
     object Diary : Screen("diary")
     object DiaryWrite : Screen("diary_write")
+    object SolutionList : Screen("solutionList/{diaryId}")
+    object SolutionWrite : Screen("solutionWrite/{diaryId}")
     object Community : Screen("community")
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Navigation() {
+fun Navigation(viewModel: DiaryViewModel) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -50,33 +54,39 @@ fun Navigation() {
     Scaffold(
         bottomBar = {
             if (currentRoute != Screen.Login.route && currentRoute != Screen.SignUp.route && currentRoute != Screen.Start.route) {
-                BottomNavigationBar(navController)
+                BottomNavigationBar(navController = navController, viewModel = viewModel)
             }
         },
         content = { innerPadding ->
-            AnimatedContent(
-                targetState = currentRoute,
-                transitionSpec = {
-                    fadeIn(animationSpec = tween(1000)) with fadeOut(animationSpec = tween(500))
-                }
-            ) { targetRoute ->
-                Row(modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()) {
+                Row(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                ) {
                     Box(modifier = Modifier.weight(1f)) {
-                        NavHost(navController = navController, startDestination = Screen.Start.route) {
-                            composable(Screen.Start.route){ Starting(navController) }
-                            composable(Screen.Login.route){ LoginScreen(navController)}
-                            composable(Screen.SignUp.route){ SignUpScreen(navController) }
-                            composable(Screen.Home.route) { HomeScreen(navController)}
-                            composable(Screen.Emotion.route) { EmotionScreen(navController)}
+                        NavHost(navController, startDestination = Screen.Start.route) {
+                            composable(Screen.Start.route) { Starting(navController) }
+                            composable(Screen.Login.route) { LoginScreen(navController) }
+                            composable(Screen.SignUp.route) { SignUpScreen(navController) }
+                            composable(Screen.Home.route) { HomeScreen(navController) }
+                            composable(Screen.Emotion.route) { backStackEntry ->
+                                val diaryId = backStackEntry.arguments?.getString("diaryId") ?: ""
+                                EmotionScreen(navController, diaryId)
+                            }
                             composable(Screen.Diary.route) { ProblemSolvingScreen(navController) }
-                            composable(Screen.DiaryWrite.route) { DiaryWriteScreen(navController)}
+                            composable(Screen.DiaryWrite.route) { DiaryWriteScreen(navController) }
+                            composable(Screen.SolutionList.route) { backStackEntry ->
+                                val diaryId = backStackEntry.arguments?.getString("diaryId") ?: ""
+                                SolutionListScreen(navController, diaryId)
+                            }
+                            composable(Screen.SolutionWrite.route) { backStackEntry ->
+                                val diaryId = backStackEntry.arguments?.getString("diaryId") ?: ""
+                                SolutionWriteScreen(navController, diaryId)
+                            }
                             composable(Screen.Community.route) { CommunityScren(navController) }
                         }
                     }
                 }
-            }
         }
     )
 }

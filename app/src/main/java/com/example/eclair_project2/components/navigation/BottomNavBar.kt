@@ -1,5 +1,6 @@
 package com.example.eclair_project2.components.navigation
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -23,6 +24,8 @@ import com.example.eclair_project2.components.icon.HomeChosenIcon
 import com.example.eclair_project2.components.icon.HomeIcon
 import com.example.eclair_project2.components.icon.PenChosenIcon
 import com.example.eclair_project2.components.icon.PenIcon
+import com.example.eclair_project2.fragment.DiaryViewModel
+import com.example.eclair_project2.navigation.Screen
 
 data class BottomNavItem(
     val name: String,
@@ -32,24 +35,32 @@ data class BottomNavItem(
 )
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
-//    val configuration = LocalConfiguration.current
-//    val itemWidth = configuration.screenWidthDp / 4
-
+fun BottomNavigationBar(navController: NavController, viewModel: DiaryViewModel) {
     val itemWidth = 100
 
-
     val items = listOf(
-        BottomNavItem("Home", "home", { HomeIcon(Modifier.width(itemWidth.dp).height(70.dp)) }, { HomeChosenIcon(Modifier.width(itemWidth.dp).height(70.dp)) }),
-        BottomNavItem("Emotion", "emotion", { PenIcon(Modifier.width(itemWidth.dp).height(70.dp)) }, { PenChosenIcon(Modifier.width(itemWidth.dp).height(70.dp)) }),
-        BottomNavItem("Diary", "diary", { BookIcon(Modifier.width(itemWidth.dp).height(70.dp)) }, { BookChosenIcon(Modifier.width(itemWidth.dp).height(70.dp)) }),
-        BottomNavItem("Community", "community", { CommunityIcon(Modifier.width(itemWidth.dp).height(70.dp)) }, { CommunityChosenIcon(Modifier.width(itemWidth.dp).height(70.dp)) })
+        BottomNavItem("Home", Screen.Home.route,
+            { HomeIcon(Modifier.width(itemWidth.dp).height(70.dp)) },
+            { HomeChosenIcon(Modifier.width(itemWidth.dp).height(70.dp)) }
+        ),
+        BottomNavItem("Diary", Screen.Diary.route,
+            { PenIcon(Modifier.width(itemWidth.dp).height(70.dp)) },
+            { PenChosenIcon(Modifier.width(itemWidth.dp).height(70.dp)) }
+        ),
+        BottomNavItem("Emotion", Screen.Emotion.route,
+            { BookIcon(Modifier.width(itemWidth.dp).height(70.dp)) },
+            { BookChosenIcon(Modifier.width(itemWidth.dp).height(70.dp)) }
+        ),
+        BottomNavItem("Community", Screen.Community.route,
+            { CommunityIcon(Modifier.width(itemWidth.dp).height(70.dp)) },
+            { CommunityChosenIcon(Modifier.width(itemWidth.dp).height(70.dp)) }
+        )
     )
+
     Surface(
         color = Color.White,
         contentColor = MaterialTheme.colorScheme.primary,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -80,7 +91,7 @@ fun BottomNavigationBar(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    if (currentRoute == item.route) {
+                    if (currentRoute != null && currentRoute == item.route) {
                         item.selectedIcon(Modifier)
                     } else {
                         item.icon(Modifier)

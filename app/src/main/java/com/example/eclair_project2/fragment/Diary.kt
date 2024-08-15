@@ -5,7 +5,7 @@ data class Diary(
     val title: String = "",
     val content: String = "",
     val date: String = "",
-    var key: String? = null // key 속성 추가
+    var key: String? = null // Firebase에서 사용될 고유 식별자
 ) {
     // 기본 생성자
     constructor() : this("", "", "", "")

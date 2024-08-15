@@ -31,7 +31,6 @@ fun ProblemSolvingScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "홈 화면", style = MaterialTheme.typography.headlineMedium)
             DiaryListScreen()
         }
     }

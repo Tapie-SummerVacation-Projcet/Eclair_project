@@ -7,6 +7,8 @@ import android.util.Base64
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import com.example.eclair_project2.fragment.DiaryViewModel
 import com.example.eclair_project2.navigation.Navigation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -17,11 +19,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val diaryViewModel: DiaryViewModel by viewModels()
         setContent {
-            // 이 블록 내에서 @Composable 함수들을 호출할 수 있습니다.
-            //clearFirebaseDatabase()
-            Navigation() // 네비게이션 시작
-
+            Navigation(viewModel = diaryViewModel)
         }
     }
 
