@@ -10,3 +10,6 @@ data class Diary(
     // 기본 생성자
     constructor() : this("", "", "", "")
 }
+
+
+data class DiaryId(val id: String)

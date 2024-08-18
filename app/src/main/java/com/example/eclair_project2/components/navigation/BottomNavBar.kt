@@ -11,19 +11,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.eclair_project2.components.icon.*
-import com.example.eclair_project2.components.icon.BookChosenIcon
-import com.example.eclair_project2.components.icon.BookIcon
-import com.example.eclair_project2.components.icon.CommunityChosenIcon
-import com.example.eclair_project2.components.icon.CommunityIcon
-import com.example.eclair_project2.components.icon.HomeChosenIcon
-import com.example.eclair_project2.components.icon.HomeIcon
-import com.example.eclair_project2.components.icon.PenChosenIcon
-import com.example.eclair_project2.components.icon.PenIcon
 import com.example.eclair_project2.fragment.DiaryViewModel
 import com.example.eclair_project2.navigation.Screen
 
@@ -32,6 +23,7 @@ data class BottomNavItem(
     val route: String,
     val icon: @Composable (Modifier) -> Unit,
     val selectedIcon: @Composable (Modifier) -> Unit,
+    val requiresDiaryId: Boolean = false // 다이어리 ID가 필요한지 여부
 )
 
 @Composable
@@ -49,7 +41,8 @@ fun BottomNavigationBar(navController: NavController, viewModel: DiaryViewModel)
         ),
         BottomNavItem("Emotion", Screen.Emotion.route,
             { BookIcon(Modifier.width(itemWidth.dp).height(70.dp)) },
-            { BookChosenIcon(Modifier.width(itemWidth.dp).height(70.dp)) }
+            { BookChosenIcon(Modifier.width(itemWidth.dp).height(70.dp)) },
+            requiresDiaryId = true
         ),
         BottomNavItem("Community", Screen.Community.route,
             { CommunityIcon(Modifier.width(itemWidth.dp).height(70.dp)) },
@@ -77,14 +70,28 @@ fun BottomNavigationBar(navController: NavController, viewModel: DiaryViewModel)
                             interactionSource = MutableInteractionSource(),
                             indication = null
                         ) {
-                            navController.navigate(item.route) {
-                                navController.graph.startDestinationRoute?.let { route ->
-                                    popUpTo(route) {
+                            if (item.requiresDiaryId) {
+                                val diaryIds = viewModel.currentDiaryIds
+                                if (diaryIds.isNotEmpty()) {
+                                    val diaryIdParams = diaryIds.joinToString(separator = ",") // 리스트를 문자열로 병합
+                                    navController.navigate("emotion/$diaryIdParams") {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                } else {
+                                    Log.e("BottomNavigationBar", "No valid diaryId found!")
+                                }
+                            } else {
+                                navController.navigate(item.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
                                         saveState = true
                                     }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
                         }
                         .padding(8.dp),

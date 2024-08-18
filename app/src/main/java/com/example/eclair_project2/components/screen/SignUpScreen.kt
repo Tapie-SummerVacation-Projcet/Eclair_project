@@ -20,6 +20,7 @@ import com.example.eclair_project2.ui.theme.Pink40
 import com.example.eclair_project2.navigation.Screen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.FirebaseDatabase
 
 @Composable
@@ -133,36 +134,55 @@ fun SignUpScreen(navController: NavController) {
             onClick = {
                 errorMessage = ""
                 if (email.isNotEmpty() && nickname.isNotEmpty() && password.isNotEmpty() && password == passwordCheck) {
-                    auth.createUserWithEmailAndPassword(email, password)
+                    auth.fetchSignInMethodsForEmail(email)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                navController.navigate("home")
-                                val userId = auth.currentUser?.uid
-                                if (userId != null) {
-                                    val user = User(email, nickname)
-                                    database.child(userId).setValue(user)
-                                        .addOnCompleteListener { dbTask ->
-                                            if (dbTask.isSuccessful) {
-                                                navController.navigate(Screen.Home.route) {
-                                                    popUpTo(Screen.SignUp.route) { inclusive = true }
-                                                }
+                                val signInMethods = task.result?.signInMethods ?: emptyList<String>()
+                                if (signInMethods.isEmpty()) {
+                                    // 이메일이 사용되지 않은 경우 회원가입 진행
+                                    auth.createUserWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener { signUpTask ->
+                                            if (signUpTask.isSuccessful) {
+                                                // 사용자 프로필 업데이트 (displayName에 닉네임 설정)
+                                                val user = auth.currentUser
+                                                val profileUpdates = UserProfileChangeRequest.Builder()
+                                                    .setDisplayName(nickname)
+                                                    .build()
+
+                                                user?.updateProfile(profileUpdates)
+                                                    ?.addOnCompleteListener { profileTask ->
+                                                        if (profileTask.isSuccessful) {
+                                                            // 닉네임을 포함한 사용자 정보 저장
+                                                            val userId = user.uid
+                                                            val userData = User(email, nickname)
+                                                            database.child(userId).setValue(userData)
+                                                                .addOnCompleteListener { dbTask ->
+                                                                    if (dbTask.isSuccessful) {
+                                                                        navController.navigate(Screen.Home.route) {
+                                                                            popUpTo(Screen.SignUp.route) { inclusive = true }
+                                                                        }
+                                                                    } else {
+                                                                        errorMessage = "데이터베이스 저장 실패: ${dbTask.exception?.localizedMessage}"
+                                                                        Log.e("SignUp", "데이터베이스 저장 실패", dbTask.exception)
+                                                                    }
+                                                                }
+                                                        } else {
+                                                            errorMessage = "프로필 업데이트 실패: ${profileTask.exception?.localizedMessage}"
+                                                            Log.e("SignUp", "프로필 업데이트 실패", profileTask.exception)
+                                                        }
+                                                    }
                                             } else {
-                                                errorMessage = "데이터베이스 저장 실패: ${dbTask.exception?.localizedMessage}"
-                                                Log.e("SignUp", "데이터베이스 저장 실패", dbTask.exception)
+                                                errorMessage = "회원가입 실패: ${signUpTask.exception?.localizedMessage}"
+                                                Log.e("SignUp", "회원가입 실패", signUpTask.exception)
                                             }
                                         }
+                                } else {
+                                    // 이미 사용 중인 이메일인 경우
+                                    errorMessage = "이미 사용 중인 이메일입니다."
                                 }
                             } else {
-                                when (task.exception) {
-                                    is FirebaseAuthUserCollisionException -> {
-                                        errorMessage = "이미 존재하는 이메일입니다."
-                                        Log.e("SignUp", "이메일 중복 오류: ${task.exception?.localizedMessage}")
-                                    }
-                                    else -> {
-                                        errorMessage = "회원가입 실패: ${task.exception?.localizedMessage}"
-                                        Log.e("SignUp", "회원가입 실패", task.exception)
-                                    }
-                                }
+                                errorMessage = "이메일 확인 중 오류 발생: ${task.exception?.localizedMessage}"
+                                Log.e("SignUp", "이메일 확인 오류", task.exception)
                             }
                         }
                 } else {

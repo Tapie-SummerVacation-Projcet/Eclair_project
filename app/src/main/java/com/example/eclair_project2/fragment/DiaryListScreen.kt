@@ -1,19 +1,29 @@
 package com.example.eclair_project2.fragment
-
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.eclair_project2.navigation.Screen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 @Composable
-fun DiaryListScreen() {
+fun DiaryListScreen(navController: NavController) {
     val auth = FirebaseAuth.getInstance()
     val database = FirebaseDatabase.getInstance().reference.child("diaries")
     val userId = auth.currentUser?.uid
@@ -45,31 +55,48 @@ fun DiaryListScreen() {
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(text = "일기 목록", fontSize = 24.sp, modifier = Modifier.padding(bottom = 16.dp))
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate(Screen.DiaryWrite.route) },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = "일기 작성")
+            }
+        },
+        content = { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                Text(text = "일기 목록", fontSize = 24.sp, modifier = Modifier.padding(bottom = 16.dp))
 
-        if (errorMessage.isNotEmpty()) {
-            Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
-            Spacer(modifier = Modifier.height(8.dp))
-        }
+                if (errorMessage.isNotEmpty()) {
+                    Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
 
-        LazyColumn {
-            items(diaryList.size) { index ->
-                val diary = diaryList[index]
-                DiaryItem(diary, onDelete = {
-                    diary.key?.let { key -> // key가 null이 아닌 경우에만 삭제 수행
-                        if (userId != null) {
-                            database.child(userId).child(key).removeValue().addOnCompleteListener { task ->
-                                if (!task.isSuccessful) {
-                                    errorMessage = "일기 삭제 실패: ${task.exception?.localizedMessage}"
+                LazyColumn {
+                    items(diaryList.size) { index ->
+                        val diary = diaryList[index]
+                        DiaryItem(diary, onDelete = {
+                            diary.key?.let { key -> // key가 null이 아닌 경우에만 삭제 수행
+                                if (userId != null) {
+                                    database.child(userId).child(key).removeValue().addOnCompleteListener { task ->
+                                        if (!task.isSuccessful) {
+                                            errorMessage = "일기 삭제 실패: ${task.exception?.localizedMessage}"
+                                        }
+                                    }
                                 }
                             }
-                        }
+                        })
                     }
-                })
+                }
             }
         }
-    }
+    )
 }
 
 @Composable

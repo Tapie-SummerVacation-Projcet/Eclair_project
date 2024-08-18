@@ -1,5 +1,6 @@
 package com.example.eclair_project2.fragment
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
@@ -16,6 +17,9 @@ class DiaryViewModel : ViewModel() {
     private val _diaryList = MutableStateFlow<List<Diary>>(emptyList())
     val diaryList: StateFlow<List<Diary>> get() = _diaryList
 
+    var currentDiaryIds by mutableStateOf<List<String>>(emptyList())
+        private set
+
     init {
         fetchDiaries()
     }
@@ -29,13 +33,17 @@ class DiaryViewModel : ViewModel() {
             database.child(userId).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val diaries = mutableListOf<Diary>()
+                    val diaryIds = mutableListOf<String>()
                     for (diarySnapshot in snapshot.children) {
                         val diary = diarySnapshot.getValue(Diary::class.java)
+                        diary?.key = diarySnapshot.key
                         if (diary != null) {
                             diaries.add(diary)
+                            diaryIds.add(diarySnapshot.key!!)
                         }
                     }
                     _diaryList.value = diaries
+                    currentDiaryIds = diaryIds // 리스트에 모든 다이어리 ID 저장
                 }
 
                 override fun onCancelled(error: DatabaseError) {
