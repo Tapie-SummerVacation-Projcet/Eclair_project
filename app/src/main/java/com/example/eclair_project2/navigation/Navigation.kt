@@ -1,6 +1,4 @@
 package com.example.eclair_project2.navigation
-
-import SolutionWriteScreen
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -26,6 +24,7 @@ import com.example.eclair_project2.fragment.EmotionScreen
 import com.example.eclair_project2.fragment.HomeScreen
 import com.example.eclair_project2.fragment.ShareDiaryOrSolutionScreen
 import com.example.eclair_project2.fragment.SharedContentDetailScreen
+import com.example.eclair_project2.fragment.SolutionWriteScreen
 import com.example.eclair_project2.fragment.Starting
 
 sealed class Screen(val route: String) {
