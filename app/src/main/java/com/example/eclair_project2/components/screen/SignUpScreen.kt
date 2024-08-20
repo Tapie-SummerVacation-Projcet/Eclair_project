@@ -241,8 +241,13 @@ fun SignUpScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = { navController.navigate(Screen.Login.route) }) {
-            Text(text = "이미 계정이 있으신가요? 로그인", color = Pink40)
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            TextButton(onClick = { navController.navigate(Screen.Login.route) }) {
+                Text(text = "이미 계정이 있으신가요? 로그인", color = Pink40)
+            }
         }
     }
 }

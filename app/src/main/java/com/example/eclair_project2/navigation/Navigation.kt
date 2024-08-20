@@ -19,11 +19,15 @@ import com.example.eclair_project2.components.screen.*
 import com.example.eclair_project2.fragment.community.CommunityScreen
 import com.example.eclair_project2.fragment.diary.DiaryListScreen
 import com.example.eclair_project2.fragment.DiaryViewModel
+import com.example.eclair_project2.fragment.community.CommunityViewScreen
 import com.example.eclair_project2.fragment.diary.DiaryWriteScreen
-import com.example.eclair_project2.fragment.solution.EmotionScreen
+import com.example.eclair_project2.fragment.solution.SolutionListScreen
 import com.example.eclair_project2.fragment.home.HomeScreen
 import com.example.eclair_project2.fragment.community.ShareDiaryOrSolutionScreen
 import com.example.eclair_project2.fragment.community.SharedContentDetailScreen
+import com.example.eclair_project2.fragment.diary.DiaryScreen
+import com.example.eclair_project2.fragment.diary.chatgpt_api.SolutionAi
+import com.example.eclair_project2.fragment.solution.SolutionEditScreen
 import com.example.eclair_project2.fragment.solution.SolutionWriteScreen
 import com.example.eclair_project2.fragment.starting.Starting
 
@@ -34,7 +38,11 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Emotion : Screen("emotion/{diaryIdParams}")
     object Diary : Screen("diary")
+    object DiaryScreen : Screen("diary_screen")
     object DiaryWrite : Screen("diary_write")
+    object SolutionEdit : Screen("solution_view")
+    object CommunityView : Screen("community_view")
+    object SolutionAi : Screen("solutionAi")
     object SolutionList : Screen("solutionList")
     object SolutionWrite : Screen("solutionWrite/{diaryId}")
     object Community : Screen("community")
@@ -68,12 +76,18 @@ fun Navigation(viewModel: DiaryViewModel) {
                         composable(Screen.Diary.route) { DiaryListScreen(navController) }
                         composable(Screen.DiaryWrite.route) { DiaryWriteScreen(navController) }
                         composable(
+                            route = "${Screen.DiaryScreen.route}/{diaryJson}",
+                            arguments = listOf(navArgument("diaryJson") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            DiaryScreen(navController = navController, backStackEntry = backStackEntry)
+                        }
+                        composable(
                             route = Screen.Emotion.route,
                             arguments = listOf(navArgument("diaryIdParams") { type = NavType.StringType })
                         ) { backStackEntry ->
                             val diaryIdParams = backStackEntry.arguments?.getString("diaryIdParams") ?: ""
                             Log.d("EmotionScreen", "Received diaryIdParams: $diaryIdParams")
-                            EmotionScreen(navController, diaryIdParams)
+                            SolutionListScreen(navController, diaryIdParams)
                         }
                         composable(
                             route = Screen.SolutionWrite.route,
@@ -83,8 +97,19 @@ fun Navigation(viewModel: DiaryViewModel) {
                             Log.d("SolutionWriteScreen", "Received diaryId: $diaryId")
                             SolutionWriteScreen(navController, diaryId)
                         }
+
+                        composable("${Screen.SolutionEdit.route}/{solutionJson}") { backStackEntry ->
+                            SolutionEditScreen(navController = navController, backStackEntry = backStackEntry)
+                        }
                         composable(Screen.Community.route) {
                             CommunityScreen(navController)
+                        }
+                        composable(
+                            route = "${Screen.CommunityView.route}/{contentJson}",
+                            arguments = listOf(navArgument("contentJson") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val contentJson = backStackEntry.arguments?.getString("contentJson")
+                            CommunityViewScreen(navController = navController, contentJson = contentJson)
                         }
                         composable(
                             route = Screen.ShareDiaryOrSolution.route

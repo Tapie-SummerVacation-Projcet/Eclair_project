@@ -72,14 +72,11 @@ fun DiaryWriteScreen(navController: NavController) {
                 if (title.isNotEmpty() && content.isNotEmpty()) {
                     val userId = auth.currentUser?.uid
                     if (userId != null) {
-                        val diaryId = database.push().key // 고유 키 생성
+                        val diaryId = database.push().key
                         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-                        val diary = Diary(userId, title, content, currentDate)
-
-                        Log.d("DiaryWriteScreen", "일단 버튼 클릭을 한: $diaryId")
+                        val diary = Diary(title, content, currentDate, null, diaryId)
 
                         if (diaryId != null) {
-                            Log.d("DiaryWriteScreen", "일단 버튼 클릭을 한: $diaryId")
                             database.child(userId).child(diaryId).setValue(diary)
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
@@ -94,7 +91,6 @@ fun DiaryWriteScreen(navController: NavController) {
                                     Log.e("DiaryWriteScreen", "일기 저장 중 오류 발생: ${exception.localizedMessage}")
                                     errorMessage = "일기 저장 중 오류 발생: ${exception.localizedMessage}"
                                 }
-                            Log.d("DiaryWriteScreen", "일단 버튼 클릭을 헸고 id 값도 존재하지만 이상하게 일기 작성 성공 부분을 실행하지 못함: $diaryId")
                         }
                     } else {
                         errorMessage = "로그인이 필요합니다."

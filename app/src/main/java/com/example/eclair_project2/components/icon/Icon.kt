@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.eclair_project2.R
 
 @Composable
@@ -179,5 +180,31 @@ fun SmilingEmoji(modifier: Modifier = Modifier){
         painter = painterResource(id = R.drawable.smilingemoji),
         contentDescription = null,
         modifier = modifier.size(30.dp)
+    )
+}
+@Composable
+fun Plus(modifier: Modifier = Modifier){
+    Image(
+        painter = painterResource(id = R.drawable.plus),
+        contentDescription = null,
+        modifier = modifier.size(70.dp)
+    )
+}
+
+@Composable
+fun Star(modifier: Modifier = Modifier){
+    Image(
+        painter = painterResource(id = R.drawable.star),
+        contentDescription = null,
+        modifier = modifier.size(60.dp)
+    )
+}
+
+@Composable
+fun BlackStar(modifier: Modifier = Modifier){
+    Image(
+        painter = painterResource(id = R.drawable.star),
+        contentDescription = null,
+        modifier = modifier.size(60.dp)
     )
 }

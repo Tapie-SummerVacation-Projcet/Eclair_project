@@ -56,6 +56,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
 
+    implementation ("com.google.code.gson:gson:2.8.8")
 
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation(libs.androidx.core.ktx)

@@ -10,9 +10,9 @@ object RetrofitInstance {
     private const val API_KEY = ""
 
     private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(60, TimeUnit.SECONDS) // 연결 타임아웃 시간 설정
+        .readTimeout(60, TimeUnit.SECONDS) // 읽기 타임아웃 시간 설정
+        .writeTimeout(60, TimeUnit.SECONDS) // 쓰기 타임아웃 시간 설정
         .addInterceptor { chain ->
             val request = chain.request().newBuilder()
                 .addHeader("Authorization", "Bearer $API_KEY")

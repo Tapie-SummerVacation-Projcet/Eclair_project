@@ -1,15 +1,11 @@
 package com.example.eclair_project2.fragment.diary
 
 data class Diary(
-    val userId: String = "",
-    val title: String = "",
-    val content: String = "",
-    val date: String = "",
-    var key: String? = null // Firebase에서 사용될 고유 식별자
+    var title: String = "",
+    var content: String = "",
+    var date: String = "",
+    var solution: String? = null,
+    var key: String? = null,
 ) {
-    // 기본 생성자
-    constructor() : this("", "", "", "")
+    constructor() : this("", "", "", null, "")
 }
-
-
-data class DiaryId(val id: String)

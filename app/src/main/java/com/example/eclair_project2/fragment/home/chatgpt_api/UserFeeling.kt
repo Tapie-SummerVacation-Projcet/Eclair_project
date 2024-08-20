@@ -33,7 +33,7 @@ suspend fun analyzeEmotion(diaryEntries: List<String>): String {
                 - 걱정: [점수]/50
                 - 스트레스: [점수]/50
 
-                그리고 분석 결과 외에는 다른 어떤 정보도 포함시키지 마.
+                그리고 분석 결과 외에는 다른 어떤 정보도 포함시키지 마. 아 한 가지더 저거 값 0이면 안 됨 적어도 최소 20야... 적어도 저 값들은 최소 20이야
             """.trimIndent()),
             Message(role = "user", content = "다음은 사용자가 작성한 일기와 해결 일지입니다:\n$diaryContent")
         ),

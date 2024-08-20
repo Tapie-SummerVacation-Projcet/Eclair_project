@@ -93,7 +93,18 @@ fun SolutionWriteScreen(navController: NavController, diaryId: String) {
         )
 
         if (showDiaryList) {
-            LazyColumn(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+            // Adjust the height based on the number of diaries, with a maximum height limit.
+            val columnHeight = if (diaries.size <= 3) {
+                (diaries.size * 56).dp // Assuming each item is approximately 56dp in height
+            } else {
+                200.dp // Maximum height if there are many diaries
+            }
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(columnHeight)
+            ) {
                 items(diaries) { diary ->
                     Text(
                         text = diary.first,

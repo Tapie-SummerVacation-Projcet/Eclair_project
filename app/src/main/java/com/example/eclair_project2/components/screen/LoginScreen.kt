@@ -37,34 +37,31 @@ fun LoginScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp)
     ) {
+        // Top Row with Back Button and Title
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(top = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "로그인", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = "로그인",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = W600,
+                    fontSize = 18.sp
+                )
+            )
         }
 
-//        Text(
-//            text = "로그인",
-//            style = MaterialTheme.typography.headlineMedium.copy(
-//                fontWeight = W600,
-//                fontSize = 18.sp
-//            ),
-//            modifier = Modifier.align(Alignment.Start)
-//        )
+        Spacer(modifier = Modifier.height(40.dp))
 
-        Spacer(modifier = Modifier.height(32.dp))
-
+        // Email Input Field
         TextField(
             value = email,
             onValueChange = { email = it },
@@ -91,6 +88,8 @@ fun LoginScreen(navController: NavController) {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Password Input Field
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -117,8 +116,9 @@ fun LoginScreen(navController: NavController) {
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.weight(1f)) // Pushes the button and text to the bottom
 
+        // Login Button
         Button(
             onClick = {
                 emailError = ""
@@ -168,8 +168,16 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = { navController.navigate(Screen.SignUp.route) }) {
-            Text(text = "계정이 없으신가요? 회원가입", color = Pink40)
+        // Centered Sign Up Navigation
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            TextButton(onClick = { navController.navigate(Screen.SignUp.route) }) {
+                Text(text = "계정이 없으신가요? 회원가입", color = Pink40)
+            }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
