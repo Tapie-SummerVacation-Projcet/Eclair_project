@@ -1,4 +1,4 @@
-package com.example.eclair_project2.fragment
+package com.example.eclair_project2.fragment.home
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -12,10 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.eclair_project2.chatgpt_api.EmotionAnalysisScreen
-import com.example.eclair_project2.chatgpt_api.analyzeEmotion
+import com.example.eclair_project2.fragment.home.chatgpt_api.EmotionAnalysisScreen
+import com.example.eclair_project2.fragment.home.chatgpt_api.analyzeEmotion
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

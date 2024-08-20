@@ -1,4 +1,4 @@
-package com.example.eclair_project2.fragment
+package com.example.eclair_project2.fragment.diary
 
 import android.util.Log
 import androidx.compose.foundation.layout.*

@@ -1,4 +1,4 @@
-package com.example.eclair_project2.chatgpt_api
+package com.example.eclair_project2.fragment.home.chatgpt_api
 
 
 import okhttp3.OkHttpClient

@@ -1,4 +1,4 @@
-package com.example.eclair_project2.fragment
+package com.example.eclair_project2.fragment.community
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
@@ -37,8 +37,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)

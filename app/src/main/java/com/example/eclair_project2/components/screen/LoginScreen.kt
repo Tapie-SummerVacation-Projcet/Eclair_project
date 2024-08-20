@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
@@ -38,18 +41,31 @@ fun LoginScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "로그인",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = W600,
-                fontSize = 18.sp
-            ),
-            modifier = Modifier.align(Alignment.Start)
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = "로그인", style = MaterialTheme.typography.headlineMedium)
+        }
+
+//        Text(
+//            text = "로그인",
+//            style = MaterialTheme.typography.headlineMedium.copy(
+//                fontWeight = W600,
+//                fontSize = 18.sp
+//            ),
+//            modifier = Modifier.align(Alignment.Start)
+//        )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        OutlinedTextField(
+        TextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("이메일") },
@@ -60,7 +76,10 @@ fun LoginScreen(navController: NavController) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             textStyle = TextStyle(
                 fontWeight = W600,
-                fontSize = 16.sp
+                fontSize = 14.sp
+            ),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White
             )
         )
         if (emailError.isNotEmpty()) {
@@ -72,8 +91,7 @@ fun LoginScreen(navController: NavController) {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
+        TextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("비밀번호") },
@@ -85,7 +103,10 @@ fun LoginScreen(navController: NavController) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             textStyle = TextStyle(
                 fontWeight = W600,
-                fontSize = 16.sp
+                fontSize = 14.sp
+            ),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White
             )
         )
         if (passwordError.isNotEmpty()) {

@@ -1,4 +1,4 @@
-package com.example.eclair_project2.fragment
+package com.example.eclair_project2.fragment.diary
 
 data class Diary(
     val userId: String = "",

@@ -4,13 +4,15 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight.Companion.W600
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -19,10 +21,10 @@ import androidx.navigation.NavController
 import com.example.eclair_project2.ui.theme.Pink40
 import com.example.eclair_project2.navigation.Screen
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.FirebaseDatabase
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
@@ -38,82 +40,99 @@ fun SignUpScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(10.dp)
     ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = "회원 가입", style = MaterialTheme.typography.headlineMedium)
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
         Text(
-            text = "회원 가입",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = W600,
-                fontSize = 18.sp
-            ),
-            modifier = Modifier.align(Alignment.Start)
+            text = "이메일",
+            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
+        TextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("이메일") },
             placeholder = { Text("example@gmail.com") },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 16.dp),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            textStyle = TextStyle(
-                fontWeight = W600,
-                fontSize = 16.sp
+            textStyle = TextStyle(fontSize = 14.sp),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White
             )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
+        Text(
+            text = "별명",
+            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        )
+        TextField(
             value = nickname,
             onValueChange = { nickname = it },
-            label = { Text("별명") },
             placeholder = { Text("ex.) 홍길동") },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 16.dp),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            textStyle = TextStyle(
-                fontWeight = W600,
-                fontSize = 16.sp
+            textStyle = TextStyle(fontSize = 14.sp),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White
             )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
+        Text(
+            text = "비밀번호",
+            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        )
+        TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("비밀번호") },
             placeholder = { Text("비밀번호를 입력해주세요.") },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 16.dp),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            textStyle = TextStyle(
-                fontWeight = W600,
-                fontSize = 16.sp
+            textStyle = TextStyle(fontSize = 14.sp),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White
             )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
+        Text(
+            text = "비밀번호 확인",
+            style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        )
+        TextField(
             value = passwordCheck,
             onValueChange = { passwordCheck = it },
-            label = { Text("비밀번호 확인") },
             placeholder = { Text("비밀번호를 다시 입력해주세요.") },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 16.dp),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            textStyle = TextStyle(
-                fontWeight = W600,
-                fontSize = 16.sp
+            textStyle = TextStyle(fontSize = 14.sp),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White
             )
         )
 
@@ -126,6 +145,23 @@ fun SignUpScreen(navController: NavController) {
                 style = TextStyle(fontSize = 14.sp)
             )
             Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Agreement checkbox and text
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = termsAgreed,
+                onCheckedChange = { termsAgreed = it }
+            )
+            Text(
+                text = "개인정보 수집 및 이용 약관에 동의하시겠습니까?",
+                color = Color.Blue,
+                style = TextStyle(fontSize = 14.sp)
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))

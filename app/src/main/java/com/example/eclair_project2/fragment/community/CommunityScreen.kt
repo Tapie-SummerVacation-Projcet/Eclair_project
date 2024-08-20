@@ -1,4 +1,4 @@
-package com.example.eclair_project2.fragment
+package com.example.eclair_project2.fragment.community
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

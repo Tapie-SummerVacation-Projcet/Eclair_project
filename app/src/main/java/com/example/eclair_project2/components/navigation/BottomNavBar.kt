@@ -74,6 +74,7 @@ fun BottomNavigationBar(navController: NavController, viewModel: DiaryViewModel)
                                 val diaryIds = viewModel.currentDiaryIds
                                 if (diaryIds.isNotEmpty()) {
                                     val diaryIdParams = diaryIds.joinToString(separator = ",") // 리스트를 문자열로 병합
+                                    Log.d("BottomNavigationBar", "Navigating to Emotion screen with diaryIds: $diaryIdParams")
                                     navController.navigate("emotion/$diaryIdParams") {
                                         popUpTo(navController.graph.startDestinationId) {
                                             saveState = true
@@ -85,6 +86,7 @@ fun BottomNavigationBar(navController: NavController, viewModel: DiaryViewModel)
                                     Log.e("BottomNavigationBar", "No valid diaryId found!")
                                 }
                             } else {
+                                Log.d("BottomNavigationBar", "Navigating to ${item.name} screen at route: ${item.route}")
                                 navController.navigate(item.route) {
                                     popUpTo(navController.graph.startDestinationId) {
                                         saveState = true

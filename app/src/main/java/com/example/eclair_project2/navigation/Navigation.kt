@@ -16,16 +16,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.eclair_project2.components.navigation.BottomNavigationBar
 import com.example.eclair_project2.components.screen.*
-import com.example.eclair_project2.fragment.CommunityScreen
-import com.example.eclair_project2.fragment.DiaryListScreen
+import com.example.eclair_project2.fragment.community.CommunityScreen
+import com.example.eclair_project2.fragment.diary.DiaryListScreen
 import com.example.eclair_project2.fragment.DiaryViewModel
-import com.example.eclair_project2.fragment.DiaryWriteScreen
-import com.example.eclair_project2.fragment.EmotionScreen
-import com.example.eclair_project2.fragment.HomeScreen
-import com.example.eclair_project2.fragment.ShareDiaryOrSolutionScreen
-import com.example.eclair_project2.fragment.SharedContentDetailScreen
-import com.example.eclair_project2.fragment.SolutionWriteScreen
-import com.example.eclair_project2.fragment.Starting
+import com.example.eclair_project2.fragment.diary.DiaryWriteScreen
+import com.example.eclair_project2.fragment.solution.EmotionScreen
+import com.example.eclair_project2.fragment.home.HomeScreen
+import com.example.eclair_project2.fragment.community.ShareDiaryOrSolutionScreen
+import com.example.eclair_project2.fragment.community.SharedContentDetailScreen
+import com.example.eclair_project2.fragment.solution.SolutionWriteScreen
+import com.example.eclair_project2.fragment.starting.Starting
 
 sealed class Screen(val route: String) {
     object Start : Screen("start")
@@ -65,6 +65,8 @@ fun Navigation(viewModel: DiaryViewModel) {
                         composable(Screen.Login.route) { LoginScreen(navController) }
                         composable(Screen.SignUp.route) { SignUpScreen(navController) }
                         composable(Screen.Home.route) { HomeScreen(navController) }
+                        composable(Screen.Diary.route) { DiaryListScreen(navController) }
+                        composable(Screen.DiaryWrite.route) { DiaryWriteScreen(navController) }
                         composable(
                             route = Screen.Emotion.route,
                             arguments = listOf(navArgument("diaryIdParams") { type = NavType.StringType })
@@ -73,8 +75,6 @@ fun Navigation(viewModel: DiaryViewModel) {
                             Log.d("EmotionScreen", "Received diaryIdParams: $diaryIdParams")
                             EmotionScreen(navController, diaryIdParams)
                         }
-                        composable(Screen.Diary.route) { DiaryListScreen(navController) }
-                        composable(Screen.DiaryWrite.route) { DiaryWriteScreen(navController) }
                         composable(
                             route = Screen.SolutionWrite.route,
                             arguments = listOf(navArgument("diaryId") { type = NavType.StringType })
