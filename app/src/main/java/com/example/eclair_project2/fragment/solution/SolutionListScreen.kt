@@ -95,7 +95,8 @@ fun SolutionListScreen(navController: NavController, diaryIdParams: String) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(Screen.SolutionWrite.route) },
+                onClick = { navController.navigate(Screen.SolutionWrite.route) {
+                }},
                 containerColor = Color.Transparent,
                 elevation = FloatingActionButtonDefaults.elevation(0.dp)
             ) {
@@ -286,7 +287,9 @@ fun SolutionItem(
                 .clickable {
                     Log.d("SolutionItem", "화살 클릭")
                     val solutionJson = gson.toJson(solution)
-                    navController.navigate("${Screen.SolutionEdit.route}/$solutionJson")
+                    navController.navigate("${Screen.SolutionEdit.route}/$solutionJson") {
+
+                    }
                 }
         )
     }

@@ -55,7 +55,10 @@ fun CommunityScreen(navController: NavController) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(Screen.ShareDiaryOrSolution.route) },
+                onClick = {
+                    navController.navigate(Screen.ShareDiaryOrSolution.route) {
+                    }
+                },
                 containerColor = Color.Transparent,
                 elevation = FloatingActionButtonDefaults.elevation(0.dp)
             ) {
@@ -183,7 +186,9 @@ fun SharedContentItem(content: SharedContent, onLike: () -> Unit, navController:
                     .size(24.dp)
                     .clickable {
                         val contentJson = Gson().toJson(content)
-                        navController.navigate("${Screen.CommunityView.route}/$contentJson")
+                        navController.navigate("${Screen.CommunityView.route}/$contentJson") {
+
+                        }
                     }
             )
         }

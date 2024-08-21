@@ -54,26 +54,52 @@ val EmotionColors = mapOf(
 @Composable
 fun HomeScreen(navController: NavController) {
     val viewModel = remember { HomeViewModel() }
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         viewModel.loadEmotionData()
         viewModel.loadUserName() // Load the user's name
     }
 
-    Column(
+    // Observe the emotion scores to determine if data is still loading
+    LaunchedEffect(viewModel.emotionScores) {
+        if (viewModel.emotionScores.isNotEmpty()) {
+            isLoading = false
+        }
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
+        if (isLoading) {
+            Text(
+                text = "Loading...",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray
+                )
+            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(24.dp))
 
-        // Display the emotion analysis screen
-        EmotionAnalysisScreen(
-            emotionScores = viewModel.emotionScores,
-            userName = viewModel.userName // Pass the user name to the screen
-        )
+                // Display the emotion analysis screen
+                EmotionAnalysisScreen(
+                    emotionScores = viewModel.emotionScores,
+                    userName = viewModel.userName // Pass the user name to the screen
+                )
+            }
+        }
     }
 }
 
@@ -137,7 +163,7 @@ fun EmotionBar(emotion: String, score: Int) {
         Spacer(modifier = Modifier.width(8.dp))
         Box(
             modifier = Modifier
-                .weight(3.5f)
+                .weight(3.0f)
                 .height(16.dp) // Reduced height of the bar
                 .background(Color.LightGray, shape = RoundedCornerShape(8.dp)) // Adjusted corner radius
         ) {

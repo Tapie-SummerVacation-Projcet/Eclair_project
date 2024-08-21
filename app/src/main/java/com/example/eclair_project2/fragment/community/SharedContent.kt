@@ -7,7 +7,8 @@ data class SharedContent(
     val userName: String = "",
     val date: String = "",
     var likes: Int = 0,
-    var key: String? = null
+    var key: String? = null,
+    val originalId: String = ""
 )
 
 data class Comment(

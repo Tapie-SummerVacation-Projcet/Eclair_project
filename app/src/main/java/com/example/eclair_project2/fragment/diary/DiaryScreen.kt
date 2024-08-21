@@ -23,22 +23,23 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun DiaryScreen(navController: NavController, backStackEntry: NavBackStackEntry) {
-    val auth = FirebaseAuth.getInstance() // FirebaseAuth 인스턴스 가져오기
-
+    val auth = FirebaseAuth.getInstance() // FirebaseAuth instance
     val diaryJson = backStackEntry.arguments?.getString("diaryJson")
     val gson = Gson()
+
     var diary by remember {
         mutableStateOf(
             try {
                 gson.fromJson(diaryJson, Diary::class.java)
             } catch (e: JsonSyntaxException) {
                 Log.e("DiaryScreen", "Failed to parse Diary JSON", e)
-                Diary() // 기본값 설정
+                Diary() // Default value
             }
         )
     }
 
-    var solution by remember { mutableStateOf<String?>(diary.solution) } // 이미 있는 솔루션 값을 초기화 시점에 할당
+    var solution by remember { mutableStateOf<String?>(diary.solution) } // Initialize with existing solution if available
+    var isLoading by remember { mutableStateOf(false) } // Loading state for AI solution
     val coroutineScope = rememberCoroutineScope()
     val database = FirebaseDatabase.getInstance().reference.child("diaries")
 
@@ -78,7 +79,6 @@ fun DiaryScreen(navController: NavController, backStackEntry: NavBackStackEntry)
                     onClick = {
                         val userId = auth.currentUser?.uid
                         if (userId != null && diary.key != null) {
-                            // 기존 일기를 동일한 키로 업데이트합니다.
                             database.child(userId).child(diary.key!!).setValue(diary)
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
@@ -100,20 +100,24 @@ fun DiaryScreen(navController: NavController, backStackEntry: NavBackStackEntry)
                     onClick = {
                         val userId = auth.currentUser?.uid
                         if (userId != null && diary.key != null) {
+                            isLoading = true // Set loading state to true
                             Log.d("DiaryScreen", "AI 솔루션 요청 중...")
                             coroutineScope.launch {
-                                Log.d("DiaryScreen", "1")  // AI 솔루션 요청 전
-                                val fetchedSolution = SolutionAi(diary.key ?: "", diary.content)
-                                solution = fetchedSolution
-                                diary = diary.copy(solution = fetchedSolution)
-                                database.child(userId).child(diary.key!!).setValue(diary)
-                                    .addOnCompleteListener { task ->
-                                        if (task.isSuccessful) {
-                                            Log.d("DiaryScreen", "AI 솔루션 받은 후 저장 완료: $fetchedSolution")
-                                        } else {
-                                            Log.e("DiaryScreen", "Failed to save AI solution: ${task.exception?.message}")
+                                try {
+                                    val fetchedSolution = SolutionAi(diary.key ?: "", diary.content)
+                                    solution = fetchedSolution
+                                    diary = diary.copy(solution = fetchedSolution)
+                                    database.child(userId).child(diary.key!!).setValue(diary)
+                                        .addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                Log.d("DiaryScreen", "AI 솔루션 받은 후 저장 완료: $fetchedSolution")
+                                            } else {
+                                                Log.e("DiaryScreen", "Failed to save AI solution: ${task.exception?.message}")
+                                            }
                                         }
-                                    }
+                                } finally {
+                                    isLoading = false // Set loading state to false
+                                }
                             }
                         }
                     },
@@ -124,10 +128,20 @@ fun DiaryScreen(navController: NavController, backStackEntry: NavBackStackEntry)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                solution?.let {
-                    if (it.isNotEmpty()) {
-                        Text(text = "AI 솔루션:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                        Text(text = it, modifier = Modifier.padding(top = 8.dp))
+                if (isLoading) {
+                    // Show loading text while fetching the AI solution
+                    Text(
+                        text = "AI 솔루션 가져오는 중...",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                } else {
+                    solution?.let {
+                        if (it.isNotEmpty()) {
+                            Text(text = "AI 솔루션:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            Text(text = it, modifier = Modifier.padding(top = 8.dp))
+                        }
                     }
                 }
             }

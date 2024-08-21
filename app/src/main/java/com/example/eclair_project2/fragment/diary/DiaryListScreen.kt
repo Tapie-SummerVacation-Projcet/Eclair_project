@@ -93,7 +93,11 @@ fun DiaryListScreen(navController: NavController) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(Screen.DiaryWrite.route) },
+                onClick = {
+                    navController.navigate(Screen.DiaryWrite.route) {
+
+                    }
+                },
                 containerColor = Color.Transparent,
                 elevation = FloatingActionButtonDefaults.elevation(0.dp)
             ) {
@@ -270,7 +274,8 @@ fun DiaryItem(diary: Diary, onDelete: () -> Unit, navController: NavController) 
                 .clickable {
                     Log.d("DiaryItem", "화살 클릭")
                     val diaryJson = gson.toJson(diary)
-                    navController.navigate("${Screen.DiaryScreen.route}/$diaryJson")
+                    navController.navigate("${Screen.DiaryScreen.route}/$diaryJson") {
+                    }
                 }
         )
     }

@@ -133,7 +133,7 @@ fun ShareDiaryOrSolutionScreen(navController: NavController) {
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height((diaries.size.coerceAtMost(2) * 56).dp) // Adjust height based on the number of items
+                                .height((diaries.size.coerceAtMost(2) * 56).dp)
                         ) {
                             items(diaries.take(2)) { diary ->
                                 Text(
@@ -148,17 +148,6 @@ fun ShareDiaryOrSolutionScreen(navController: NavController) {
                                     fontSize = 16.sp
                                 )
                             }
-//                            if (diaries.size > 2) {
-//                                Text(
-//                                    text = "더보기...",
-//                                    modifier = Modifier
-//                                        .fillMaxWidth()
-//                                        .clickable { showDiaryList = !showDiaryList }
-//                                        .padding(8.dp),
-//                                    fontSize = 16.sp,
-//                                    color = MaterialTheme.colorScheme.primary
-//                                )
-//                            }
                         }
                     }
                 }
@@ -180,7 +169,7 @@ fun ShareDiaryOrSolutionScreen(navController: NavController) {
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height((solutions.size.coerceAtMost(2) * 56).dp) // Adjust height based on the number of items
+                                .height((solutions.size.coerceAtMost(2) * 56).dp)
                         ) {
                             items(solutions.take(2)) { solution ->
                                 Text(
@@ -195,17 +184,6 @@ fun ShareDiaryOrSolutionScreen(navController: NavController) {
                                     fontSize = 16.sp
                                 )
                             }
-//                            if (solutions.size > 2) {
-//                                Text(
-//                                    text = "더보기...",
-//                                    modifier = Modifier
-//                                        .fillMaxWidth()
-//                                        .clickable { showSolutionList = !showSolutionList }
-//                                        .padding(8.dp),
-//                                    fontSize = 16.sp,
-//                                    color = MaterialTheme.colorScheme.primary
-//                                )
-//                            }
                         }
                     }
                 }
@@ -234,11 +212,14 @@ fun ShareDiaryOrSolutionScreen(navController: NavController) {
                                 val sharedContentId = database.push().key
                                 val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
+                                val originalId = selectedDiary?.second ?: selectedSolution?.second ?: ""
+
                                 val sharedContent = SharedContent(
                                     title = selectedDiary?.first ?: selectedSolution?.first ?: "",
                                     description = description,
                                     userName = userName,
-                                    date = currentDate
+                                    date = currentDate,
+                                    originalId = originalId // Store the original diary/solution ID
                                 )
 
                                 if (sharedContentId != null) {

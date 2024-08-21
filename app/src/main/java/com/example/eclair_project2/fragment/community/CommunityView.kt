@@ -15,7 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 
@@ -34,10 +37,27 @@ fun CommunityViewScreen(navController: NavController, contentJson: String?) {
         )
     }
 
-    val database = FirebaseDatabase.getInstance().reference.child("sharedContent")
+    var originalTitle by remember { mutableStateOf<String?>(null) }
+    var originalContent by remember { mutableStateOf<String?>(null) } // State to hold the original content
+    val database = FirebaseDatabase.getInstance().reference
 
-    LaunchedEffect(content) {
-        Log.d("CommunityViewScreen", "Content Loaded: Title - ${content.title}, Description - ${content.description}, Date - ${content.date}")
+    // Fetch the original content based on the originalId
+    LaunchedEffect(content.originalId) {
+        if (content.originalId.isNotEmpty()) {
+            val originalPath = if (content.originalId.startsWith("-")) "diaries" else "solutions" // Adjust path as needed
+            val userId = auth.currentUser?.uid ?: return@LaunchedEffect
+            database.child(originalPath).child(userId).child(content.originalId)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        originalTitle = snapshot.child("title").getValue(String::class.java)
+                        originalContent = snapshot.child("content").getValue(String::class.java)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("CommunityViewScreen", "Failed to load original content: ${error.message}")
+                    }
+                })
+        }
     }
 
     LazyColumn(modifier = Modifier.padding(16.dp)) {
@@ -58,10 +78,13 @@ fun CommunityViewScreen(navController: NavController, contentJson: String?) {
                     )
                     IconButton(
                         onClick = {
-                            // Handle like functionality
-                            val updatedLikes = content.likes + 1
+                            // Increment the like count locally
+                            val updatedContent = content.copy(likes = content.likes + 1)
+                            content = updatedContent // Trigger recomposition by updating the state
+
+                            // Update the likes count in the database
                             content.key?.let { key ->
-                                database.child(key).child("likes").setValue(updatedLikes)
+                                database.child("sharedContent").child(key).child("likes").setValue(updatedContent.likes)
                             }
                         }
                     ) {
@@ -80,6 +103,20 @@ fun CommunityViewScreen(navController: NavController, contentJson: String?) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                originalContent?.let {
+                    Column {
+                        Text(
+                            text = "${originalTitle ?: "Loading title"}: $it",
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                } ?: run {
+                    Text(text = "Loading original content...", fontSize = 16.sp)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Column {
                     Text(
                         text = "Posted by ${content.userName} on ${content.date}",
@@ -89,7 +126,6 @@ fun CommunityViewScreen(navController: NavController, contentJson: String?) {
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-
             }
         }
     }
